@@ -1,0 +1,30 @@
+.AddressFieldContainer {
+  border: 1px solid var(--border-color);
+  padding: 2rem;
+  background-color: var(--bg-color);
+  text-align: left;
+}
+
+.input-simple {
+  border: 1px solid var(--border-color);
+}
+
+textarea:focus,
+input:focus {
+  outline: 1px solid var(--border-color-2);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 32rem 32rem;
+  gap: 1rem;
+}
+
+.input-address {
+  grid-column: 1/3;
+}
+
+.input-area {
+  width: 61rem;
+  height: 5rem;
+}
