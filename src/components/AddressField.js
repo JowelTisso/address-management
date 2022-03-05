@@ -22,6 +22,16 @@ const AddressField = ({ toggleAddingAddress }) => {
     landmark: true,
   });
 
+  const [validationMsg, setValidationMsg] = useState({
+    name: "",
+    mobile: "Please fill your mobile",
+    address: "",
+    pin: "",
+    city: "",
+    state: "",
+    landmark: "",
+  });
+
   const updateFormData = (target, key) => {
     setFormData((formData) => ({ ...formData, [key]: target.value }));
   };
@@ -40,6 +50,31 @@ const AddressField = ({ toggleAddingAddress }) => {
             }));
       }
     );
+
+    if (
+      formData.name.length > 1 &&
+      formData.mobile.length === 10 &&
+      formData.address.length > 1 &&
+      formData.pin.length > 1 &&
+      formData.city.length > 1 &&
+      formData.state.length > 1 &&
+      formData.landmark.length > 1
+    ) {
+    } else if (formData.mobile.length > 1 && formData.mobile.length !== 10) {
+      setFormValidation((validation) => ({
+        ...validation,
+        mobile: false,
+      }));
+      setValidationMsg((validation) => ({
+        ...validation,
+        mobile: "Please fill correct mobile number",
+      }));
+    } else {
+      setValidationMsg((validation) => ({
+        ...validation,
+        mobile: "Please fill your mobile",
+      }));
+    }
   };
 
   return (
@@ -66,7 +101,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             onChange={({ target }) => updateFormData(target, "mobile")}
           />
           {!formValidation.mobile && (
-            <p className="input-val val-error">Please fill your mobile</p>
+            <p className="input-val val-error">{validationMsg.mobile}</p>
           )}
         </div>
 

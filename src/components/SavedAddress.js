@@ -1,16 +1,16 @@
 import React from "react";
 import "./SavedAddress.css";
 
-const SavedAddress = ({ toggleModal, toggleEditMode }) => {
+const SavedAddress = ({ data, toggleModal, toggleEditMode }) => {
+  const { name, mobile, address, pin, city, state, landmark } = data;
   return (
     <div className="savedAddressContainer border mg-top-2x">
       <div className="name-container">
-        <p className="t4">Jowel Tisso</p>
-        <p className="t4">8877887788</p>
+        <p className="t4">{name}</p>
+        <p className="t4">{mobile}</p>
       </div>
       <p className="address t5 mg-top-2x">
-        1904 Patterson Street, Houston,TX-77063 1904 Patterson Street,
-        Houston,TX-77063
+        {address}, {landmark}, {city}, {state} {pin}
       </p>
       <div className="menu-container">
         <button className="pointer mg-right-2x" onClick={toggleEditMode}>

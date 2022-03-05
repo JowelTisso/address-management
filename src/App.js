@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import { AddressField } from "./components/AddressField";
 import SavedAddress from "./components/SavedAddress";
@@ -7,6 +8,7 @@ function App() {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
   const [isEditActive, setIsEditActive] = useState(false);
+  const [addressList, setAddressList] = useState([]);
 
   const toggleModal = () => {
     setIsModalActive((state) => !state);
@@ -19,6 +21,21 @@ function App() {
   const toggleEditMode = () => {
     setIsEditActive((state) => !state);
   };
+
+  const getInitialData = async () => {
+    try {
+      const { status, data } = await axios.get("/api/addresses");
+      if (status === 200) {
+        setAddressList(data.addresses);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getInitialData();
+  }, []);
 
   return (
     <div className="App flex-center">
@@ -41,10 +58,15 @@ function App() {
         {isEditActive ? (
           <AddressField toggleAddingAddress={toggleEditMode} />
         ) : (
-          <SavedAddress
-            toggleModal={toggleModal}
-            toggleEditMode={toggleEditMode}
-          />
+          addressList.map((data) => {
+            return (
+              <SavedAddress
+                data={data}
+                toggleModal={toggleModal}
+                toggleEditMode={toggleEditMode}
+              />
+            );
+          })
         )}
       </div>
       {isModalActive && (
