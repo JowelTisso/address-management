@@ -2,7 +2,7 @@ import React from "react";
 import "./SavedAddress.css";
 
 const SavedAddress = ({ data, toggleModal, toggleEditMode }) => {
-  const { name, mobile, address, pin, city, state, landmark } = data;
+  const { id, name, mobile, address, pin, city, state, landmark } = data;
   return (
     <div className="savedAddressContainer border mg-top-2x">
       <div className="name-container">

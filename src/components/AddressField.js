@@ -1,4 +1,7 @@
+import faker from "@faker-js/faker";
+import axios from "axios";
 import React, { useState } from "react";
+import { useAddress } from "../context/address-context";
 import "./AddressField.css";
 
 const AddressField = ({ toggleAddingAddress }) => {
@@ -36,7 +39,9 @@ const AddressField = ({ toggleAddingAddress }) => {
     setFormData((formData) => ({ ...formData, [key]: target.value }));
   };
 
-  const submitForm = () => {
+  const { addToAddressList } = useAddress();
+
+  const submitForm = async () => {
     ["name", "mobile", "address", "pin", "city", "state", "landmark"].map(
       (field) => {
         formData[field].length > 0
@@ -60,7 +65,25 @@ const AddressField = ({ toggleAddingAddress }) => {
       formData.state.length > 1 &&
       formData.landmark.length > 1
     ) {
-    } else if (formData.mobile.length > 1 && formData.mobile.length !== 10) {
+      const { name, mobile, address, pin, city, state, landmark } = formData;
+      const addressData = {
+        id: faker.datatype.uuid(),
+        name: name,
+        mobile: mobile,
+        address: address,
+        pin: pin,
+        city: city,
+        state: state,
+        landmark: landmark,
+      };
+      const { status } = await axios.post("/api/addresses", {
+        address: addressData,
+      });
+
+      if (status === 201) {
+        addToAddressList(addressData);
+      }
+    } else if (formData.mobile.length !== 10) {
       setFormValidation((validation) => ({
         ...validation,
         mobile: false,

@@ -3,12 +3,15 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { AddressField } from "./components/AddressField";
 import SavedAddress from "./components/SavedAddress";
+import { useAddress } from "./context/address-context";
 
 function App() {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
   const [isEditActive, setIsEditActive] = useState(false);
-  const [addressList, setAddressList] = useState([]);
+  // const [addressList, setAddressList] = useState([]);
+
+  const { addressList, setAddressList, addToAddressList } = useAddress();
 
   const toggleModal = () => {
     setIsModalActive((state) => !state);
@@ -60,11 +63,13 @@ function App() {
         ) : (
           addressList.map((data) => {
             return (
-              <SavedAddress
-                data={data}
-                toggleModal={toggleModal}
-                toggleEditMode={toggleEditMode}
-              />
+              <div key={data.id}>
+                <SavedAddress
+                  data={data}
+                  toggleModal={toggleModal}
+                  toggleEditMode={toggleEditMode}
+                />
+              </div>
             );
           })
         )}
