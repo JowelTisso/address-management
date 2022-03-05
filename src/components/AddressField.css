@@ -28,3 +28,12 @@ input:focus {
   width: 61rem;
   height: 5rem;
 }
+
+.input-container {
+  position: relative;
+}
+
+.input-val {
+  position: absolute;
+  bottom: -1.8rem;
+}

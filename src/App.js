@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="App flex-center">
       <div className="addressContainer">
-        <p class="t3">Manage Address</p>
+        <p className="t3">Manage Address</p>
         {!isAddingAddress ? (
           <button
             className="addAddressContainer pointer mg-top-2x"
@@ -48,19 +48,19 @@ function App() {
         )}
       </div>
       {isModalActive && (
-        <div id="modal" class="modal">
+        <div id="modal" className="modal">
           <div
             id="modal-backdrop"
-            class="modal-backdrop"
+            className="modal-backdrop"
             onClick={toggleModal}
           ></div>
-          <div class="modal-content">
-            <p class="t4 mg-top-2x mg-bottom-4x">
+          <div className="modal-content">
+            <p className="t4 mg-top-2x mg-bottom-4x">
               Are you sure you want to delete this address?
             </p>
-            <div class="modal-btn-container">
-              <button class="btn btn-primary">DELETE</button>
-              <button class="btn btn-secondary" onClick={toggleModal}>
+            <div className="modal-btn-container">
+              <button className="btn btn-primary">DELETE</button>
+              <button className="btn btn-secondary" onClick={toggleModal}>
                 CANCEL
               </button>
             </div>
