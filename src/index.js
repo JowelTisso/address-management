@@ -5,7 +5,7 @@ import App from "./App";
 import setUpMockServer from "./api/mock.server";
 import { AddressProvider } from "./context/address-context";
 
-setUpMockServer();
+setUpMockServer("production");
 
 ReactDOM.render(
   <React.StrictMode>

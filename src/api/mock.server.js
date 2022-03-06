@@ -1,8 +1,9 @@
 import { createServer, Model, RestSerializer } from "miragejs";
 import faker from "@faker-js/faker";
 
-const setUpMockServer = () => {
-  createServer({
+const setUpMockServer = ({ environment = "production" }) => {
+  return createServer({
+    environment,
     serializers: {
       application: RestSerializer,
     },
