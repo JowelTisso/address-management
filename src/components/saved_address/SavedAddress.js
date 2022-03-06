@@ -1,6 +1,6 @@
 import React from "react";
 import "./SavedAddress.css";
-import { useAddress } from "../context/address-context";
+import { useAddress } from "../../context/address-context";
 
 const SavedAddress = ({
   data,

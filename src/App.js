@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { AddressField } from "./components/AddressField";
-import { Modal } from "./components/Modal";
-import SavedAddress from "./components/SavedAddress";
+import { AddressField } from "./components/address_field/AddressField";
+import { Modal } from "./components/modal/Modal";
+import SavedAddress from "./components/saved_address/SavedAddress";
 import { useAddress } from "./context/address-context";
 
 function App() {
