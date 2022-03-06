@@ -51,7 +51,7 @@ const AddressField = ({ toggleAddressField }) => {
     try {
       // To check if each field in address has valid entry
       ["name", "mobile", "address", "pin", "city", "state", "landmark"].map(
-        (field) => {
+        (field) =>
           formData[field].length > 0
             ? setFormValidation((validation) => ({
                 ...validation,
@@ -60,8 +60,7 @@ const AddressField = ({ toggleAddressField }) => {
             : setFormValidation((validation) => ({
                 ...validation,
                 [field]: false,
-              }));
-        }
+              }))
       );
 
       // To check if all the fields are not empty
