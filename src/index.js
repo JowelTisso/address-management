@@ -7,6 +7,11 @@ import { AddressProvider } from "./context/address-context";
 
 setUpMockServer("production");
 
+console.log(process.env.NODE_ENV);
+// if (process.env.NODE_ENV === "development") {
+//   makeServer({ environment: "development" });
+// }
+
 ReactDOM.render(
   <React.StrictMode>
     <AddressProvider>

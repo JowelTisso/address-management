@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import axios from "axios";
 import { AddressField } from "./components/address_field/AddressField";
 import { Modal } from "./components/modal/Modal";
 import SavedAddress from "./components/saved_address/SavedAddress";
