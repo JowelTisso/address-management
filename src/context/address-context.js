@@ -27,7 +27,7 @@ const AddressProvider = ({ children }) => {
   };
 
   const removeFromAddressList = (id) => {
-    setAddressList((list) => list.filter((address) => address.id != id));
+    setAddressList((list) => list.filter((address) => address.id !== id));
   };
 
   return (
