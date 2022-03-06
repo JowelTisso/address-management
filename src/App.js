@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { AddressField } from "./components/AddressField";
+import { Modal } from "./components/Modal";
 import SavedAddress from "./components/SavedAddress";
 import { useAddress } from "./context/address-context";
 
@@ -11,13 +12,20 @@ function App() {
   const [isEditActive, setIsEditActive] = useState(false);
   const [addressId, setAddressId] = useState("");
 
-  const { addressList, setAddressList, removeFromAddressList } = useAddress();
+  // custom address hook
+  const {
+    addressList,
+    setAddressList,
+    removeFromAddressList,
+    setSelectedAddress,
+  } = useAddress();
 
   const toggleModal = () => {
     setIsModalActive((state) => !state);
   };
 
   const toggleAddingAddress = () => {
+    resetAddressField();
     setIsAddingAddress((state) => !state);
   };
 
@@ -54,6 +62,26 @@ function App() {
     }
   };
 
+  const resetAddressField = () => {
+    setSelectedAddress({
+      name: "",
+      mobile: "",
+      address: "",
+      pin: "",
+      city: "",
+      state: "",
+      landmark: "",
+    });
+  };
+
+  const closeEditField = () => {
+    setIsEditActive(false);
+  };
+
+  const closeNewAddressField = () => {
+    setIsAddingAddress(false);
+  };
+
   useEffect(() => {
     getInitialDataFromServer();
   }, []);
@@ -65,7 +93,10 @@ function App() {
         {!isAddingAddress ? (
           <button
             className="addAddressContainer pointer mg-top-2x"
-            onClick={toggleAddingAddress}
+            onClick={() => {
+              closeEditField();
+              toggleAddingAddress();
+            }}
           >
             <p className="t4">
               <span className="t4">+ </span>
@@ -73,11 +104,11 @@ function App() {
             </p>
           </button>
         ) : (
-          <AddressField toggleAddingAddress={toggleAddingAddress} />
+          <AddressField toggleAddressField={toggleAddingAddress} />
         )}
 
         {isEditActive ? (
-          <AddressField toggleAddingAddress={toggleEditMode} />
+          <AddressField toggleAddressField={toggleEditMode} />
         ) : (
           addressList.map((data) => {
             return (
@@ -87,6 +118,7 @@ function App() {
                   toggleModal={toggleModal}
                   toggleEditMode={toggleEditMode}
                   getSelectedAddressId={getSelectedAddressId}
+                  closeNewAddressField={closeNewAddressField}
                 />
               </div>
             );
@@ -94,29 +126,10 @@ function App() {
         )}
       </div>
       {isModalActive && (
-        <div id="modal" className="modal">
-          <div
-            id="modal-backdrop"
-            className="modal-backdrop"
-            onClick={toggleModal}
-          ></div>
-          <div className="modal-content">
-            <p className="t4 mg-top-2x mg-bottom-4x">
-              Are you sure you want to delete this address?
-            </p>
-            <div className="modal-btn-container">
-              <button
-                className="btn btn-primary"
-                onClick={deleteAddressFromServer}
-              >
-                DELETE
-              </button>
-              <button className="btn btn-secondary" onClick={toggleModal}>
-                CANCEL
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal
+          toggleModal={toggleModal}
+          deleteAddressFromServer={deleteAddressFromServer}
+        />
       )}
     </div>
   );

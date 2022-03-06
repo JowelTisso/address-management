@@ -1,18 +1,26 @@
 import { createContext, useContext, useState } from "react";
 
 const defaultValue = {
-  name: "",
-  mobile: "",
-  address: "",
-  pin: "",
-  city: "",
-  state: "",
-  landmark: "",
+  addressList: [],
+  setAddressList: () => {},
+  addToAddressList: () => {},
+  removeFromAddressList: () => {},
+  selectedAddress: {
+    name: "",
+    mobile: "",
+    address: "",
+    pin: "",
+    city: "",
+    state: "",
+    landmark: "",
+  },
+  setSelectedAddress: () => {},
 };
 const AddressContext = createContext(defaultValue);
 
 const AddressProvider = ({ children }) => {
   const [addressList, setAddressList] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState({});
 
   const addToAddressList = (data) => {
     setAddressList((list) => list.concat(data));
@@ -29,6 +37,8 @@ const AddressProvider = ({ children }) => {
         setAddressList: setAddressList,
         addToAddressList: addToAddressList,
         removeFromAddressList: removeFromAddressList,
+        selectedAddress: selectedAddress,
+        setSelectedAddress: setSelectedAddress,
       }}
     >
       {children}

@@ -1,19 +1,23 @@
+import "./AddressField.css";
 import faker from "@faker-js/faker";
 import axios from "axios";
 import React, { useState } from "react";
 import { useAddress } from "../context/address-context";
-import "./AddressField.css";
 
-const AddressField = ({ toggleAddingAddress }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    mobile: "",
-    address: "",
-    pin: "",
-    city: "",
-    state: "",
-    landmark: "",
-  });
+const AddressField = ({ toggleAddressField }) => {
+  const { selectedAddress } = useAddress();
+
+  const [formData, setFormData] = useState(
+    selectedAddress || {
+      name: "",
+      mobile: "",
+      address: "",
+      pin: "",
+      city: "",
+      state: "",
+      landmark: "",
+    }
+  );
 
   const [formValidation, setFormValidation] = useState({
     name: true,
@@ -35,69 +39,99 @@ const AddressField = ({ toggleAddingAddress }) => {
     landmark: "",
   });
 
-  const { addToAddressList } = useAddress();
+  const { addToAddressList, removeFromAddressList } = useAddress();
+
+  const { name, mobile, address, pin, city, state, landmark } = formData;
 
   const updateFormData = (target, key) => {
     setFormData((formData) => ({ ...formData, [key]: target.value }));
   };
 
   const submitForm = async () => {
-    ["name", "mobile", "address", "pin", "city", "state", "landmark"].map(
-      (field) => {
-        formData[field].length > 0
-          ? setFormValidation((validation) => ({
-              ...validation,
-              [field]: true,
-            }))
-          : setFormValidation((validation) => ({
-              ...validation,
-              [field]: false,
-            }));
+    try {
+      // To check if each field in address has valid entry
+      ["name", "mobile", "address", "pin", "city", "state", "landmark"].map(
+        (field) => {
+          formData[field].length > 0
+            ? setFormValidation((validation) => ({
+                ...validation,
+                [field]: true,
+              }))
+            : setFormValidation((validation) => ({
+                ...validation,
+                [field]: false,
+              }));
+        }
+      );
+
+      // To check if all the fields are not empty
+      if (
+        name.length > 1 &&
+        mobile.length === 10 &&
+        address.length > 1 &&
+        pin.length > 1 &&
+        city.length > 1 &&
+        state.length > 1 &&
+        landmark.length > 1
+      ) {
+        const addressData = {
+          id: faker.datatype.uuid(),
+          name: name,
+          mobile: mobile,
+          address: address,
+          pin: pin,
+          city: city,
+          state: state,
+          landmark: landmark,
+        };
+
+        // To check if its a new entry or and update
+
+        if (selectedAddress.name === "" && selectedAddress.address === "") {
+          // Add address
+          const { status } = await axios.post("/api/addresses", {
+            address: addressData,
+          });
+
+          if (status === 201) {
+            addToAddressList(addressData);
+          }
+        } else {
+          // Update address
+          const { status } = await axios.put(
+            `/api/addresses/${selectedAddress.id}`,
+            {
+              address: { ...addressData, id: selectedAddress.id }, // To make id consistent through out updates
+            }
+          );
+
+          if (status === 200) {
+            removeFromAddressList(selectedAddress.id);
+            addToAddressList({ ...addressData, id: selectedAddress.id }); // To make id consistent through out updates
+            toggleAddressField();
+          }
+        }
+      } else if (mobile.length !== 10) {
+        //To check if mobile is valid
+        setFormValidation((validation) => ({
+          ...validation,
+          mobile: false,
+        }));
+
+        // To change validation message for mobile if invalid input
+        setValidationMsg((validation) => ({
+          ...validation,
+          mobile: "Please fill correct mobile number",
+        }));
+      } else {
+        // To change validation message for mobile if no input
+        setValidationMsg((validation) => ({
+          ...validation,
+          mobile: "Please fill your mobile",
+        }));
       }
-    );
-
-    if (
-      formData.name.length > 1 &&
-      formData.mobile.length === 10 &&
-      formData.address.length > 1 &&
-      formData.pin.length > 1 &&
-      formData.city.length > 1 &&
-      formData.state.length > 1 &&
-      formData.landmark.length > 1
-    ) {
-      const { name, mobile, address, pin, city, state, landmark } = formData;
-      const addressData = {
-        id: faker.datatype.uuid(),
-        name: name,
-        mobile: mobile,
-        address: address,
-        pin: pin,
-        city: city,
-        state: state,
-        landmark: landmark,
-      };
-
-      const { status } = await axios.post("/api/addresses", {
-        address: addressData,
-      });
-
-      if (status === 201) {
-        addToAddressList(addressData);
-      }
-    } else if (formData.mobile.length !== 10) {
-      setFormValidation((validation) => ({
-        ...validation,
-        mobile: false,
-      }));
-      setValidationMsg((validation) => ({
-        ...validation,
-        mobile: "Please fill correct mobile number",
-      }));
-    } else {
-      setValidationMsg((validation) => ({
-        ...validation,
-        mobile: "Please fill your mobile",
-      }));
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -110,6 +144,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="text"
             className="input-simple"
             placeholder="Name"
+            value={name}
             onChange={({ target }) => updateFormData(target, "name")}
           />
           {!formValidation.name && (
@@ -122,6 +157,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="tel"
             className="input-simple"
             placeholder="Mobile"
+            value={mobile}
             onChange={({ target }) => updateFormData(target, "mobile")}
           />
           {!formValidation.mobile && (
@@ -133,6 +169,7 @@ const AddressField = ({ toggleAddingAddress }) => {
           <textarea
             className="input-simple input-area"
             placeholder="Address"
+            value={address}
             onChange={({ target }) => updateFormData(target, "address")}
           />
           {!formValidation.address && (
@@ -145,6 +182,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="number"
             className="input-simple"
             placeholder="Pin"
+            value={pin}
             onChange={({ target }) => updateFormData(target, "pin")}
           />
           {!formValidation.pin && (
@@ -157,6 +195,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="text"
             className="input-simple"
             placeholder="City/District/Town"
+            value={city}
             onChange={({ target }) => updateFormData(target, "city")}
           />
           {!formValidation.city && (
@@ -169,6 +208,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="text"
             className="input-simple"
             placeholder="State"
+            value={state}
             onChange={({ target }) => updateFormData(target, "state")}
           />
           {!formValidation.state && (
@@ -181,6 +221,7 @@ const AddressField = ({ toggleAddingAddress }) => {
             type="text"
             className="input-simple"
             placeholder="Landmark"
+            value={landmark}
             onChange={({ target }) => updateFormData(target, "landmark")}
           />
           {!formValidation.landmark && (
@@ -193,7 +234,7 @@ const AddressField = ({ toggleAddingAddress }) => {
       </button>
       <button
         className="btn btn-secondary mg-left-2x"
-        onClick={toggleAddingAddress}
+        onClick={toggleAddressField}
       >
         Cancel
       </button>
