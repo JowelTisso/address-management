@@ -84,7 +84,7 @@ function App() {
 
   useEffect(() => {
     getInitialDataFromServer();
-  }, []);
+  });
 
   return (
     <div className="App flex-center">
