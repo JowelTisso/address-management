@@ -35,11 +35,11 @@ const AddressField = ({ toggleAddingAddress }) => {
     landmark: "",
   });
 
+  const { addToAddressList } = useAddress();
+
   const updateFormData = (target, key) => {
     setFormData((formData) => ({ ...formData, [key]: target.value }));
   };
-
-  const { addToAddressList } = useAddress();
 
   const submitForm = async () => {
     ["name", "mobile", "address", "pin", "city", "state", "landmark"].map(
@@ -76,6 +76,7 @@ const AddressField = ({ toggleAddingAddress }) => {
         state: state,
         landmark: landmark,
       };
+
       const { status } = await axios.post("/api/addresses", {
         address: addressData,
       });

@@ -18,8 +18,8 @@ const AddressProvider = ({ children }) => {
     setAddressList((list) => list.concat(data));
   };
 
-  const removeFromAddressList = () => {
-    //
+  const removeFromAddressList = (id) => {
+    setAddressList((list) => list.filter((address) => address.id != id));
   };
 
   return (
@@ -28,6 +28,7 @@ const AddressProvider = ({ children }) => {
         addressList: addressList,
         setAddressList: setAddressList,
         addToAddressList: addToAddressList,
+        removeFromAddressList: removeFromAddressList,
       }}
     >
       {children}

@@ -1,7 +1,12 @@
 import React from "react";
 import "./SavedAddress.css";
 
-const SavedAddress = ({ data, toggleModal, toggleEditMode }) => {
+const SavedAddress = ({
+  data,
+  toggleModal,
+  toggleEditMode,
+  getSelectedAddressId,
+}) => {
   const { id, name, mobile, address, pin, city, state, landmark } = data;
   return (
     <div className="savedAddressContainer border mg-top-2x">
@@ -16,7 +21,13 @@ const SavedAddress = ({ data, toggleModal, toggleEditMode }) => {
         <button className="pointer mg-right-2x" onClick={toggleEditMode}>
           <ion-icon name="create-outline"></ion-icon>
         </button>
-        <button className="pointer" onClick={toggleModal}>
+        <button
+          className="pointer"
+          onClick={() => {
+            toggleModal();
+            getSelectedAddressId(id);
+          }}
+        >
           <ion-icon name="trash-outline"></ion-icon>
         </button>
       </div>

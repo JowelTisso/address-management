@@ -9,9 +9,9 @@ function App() {
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isModalActive, setIsModalActive] = useState(false);
   const [isEditActive, setIsEditActive] = useState(false);
-  // const [addressList, setAddressList] = useState([]);
+  const [addressId, setAddressId] = useState("");
 
-  const { addressList, setAddressList, addToAddressList } = useAddress();
+  const { addressList, setAddressList, removeFromAddressList } = useAddress();
 
   const toggleModal = () => {
     setIsModalActive((state) => !state);
@@ -25,7 +25,7 @@ function App() {
     setIsEditActive((state) => !state);
   };
 
-  const getInitialData = async () => {
+  const getInitialDataFromServer = async () => {
     try {
       const { status, data } = await axios.get("/api/addresses");
       if (status === 200) {
@@ -36,8 +36,26 @@ function App() {
     }
   };
 
+  const getSelectedAddressId = (id) => {
+    setAddressId(id);
+  };
+
+  const deleteAddressFromServer = async () => {
+    try {
+      if (addressId) {
+        toggleModal();
+        const { status } = await axios.delete(`/api/addresses/${addressId}`);
+        if (status === 204) {
+          removeFromAddressList(addressId);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    getInitialData();
+    getInitialDataFromServer();
   }, []);
 
   return (
@@ -68,6 +86,7 @@ function App() {
                   data={data}
                   toggleModal={toggleModal}
                   toggleEditMode={toggleEditMode}
+                  getSelectedAddressId={getSelectedAddressId}
                 />
               </div>
             );
@@ -86,7 +105,12 @@ function App() {
               Are you sure you want to delete this address?
             </p>
             <div className="modal-btn-container">
-              <button className="btn btn-primary">DELETE</button>
+              <button
+                className="btn btn-primary"
+                onClick={deleteAddressFromServer}
+              >
+                DELETE
+              </button>
               <button className="btn btn-secondary" onClick={toggleModal}>
                 CANCEL
               </button>
